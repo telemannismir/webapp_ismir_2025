@@ -1,5 +1,6 @@
 [tool.poetry]
 name = "app"
+package-mode = false
 version = "0.1.0"
 description = ""
 authors = ["Telemann ISMIR 2025"]
