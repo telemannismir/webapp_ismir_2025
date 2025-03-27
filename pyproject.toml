@@ -18,6 +18,7 @@ cmasher = "^1.9.2"
 seaborn = "^0.13.2"
 streamlit-pdf-viewer = "^0.0.21"
 scipy = "^1.15.2"
+verovio = "^5.1.0"
 
 [tool.pytest.ini_options]
 minversion = "6.0"

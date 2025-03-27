@@ -1747,6 +1747,41 @@ socks = ["pysocks (>=1.5.6,!=1.5.7,<2.0)"]
 zstd = ["zstandard (>=0.18.0)"]
 
 [[package]]
+name = "verovio"
+version = "5.1.0"
+description = "A library and toolkit for engraving MEI music notation into SVG"
+optional = false
+python-versions = ">=3.9"
+files = [
+    {file = "verovio-5.1.0-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:1ff2f74b10aadc856116153ff7e9ac462db0a26d7253e4fa1ad1e3818a9ec62f"},
+    {file = "verovio-5.1.0-cp310-cp310-macosx_11_0_x86_64.whl", hash = "sha256:604eab17bd1f405ee2797370b7bb8e9af2981bb4cd16a4e3bcb99a4edc8e19cd"},
+    {file = "verovio-5.1.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:3c72cae60c18897f2fca1b8436a399b0345e45e55fa9bd0d9b56fd70f74967a7"},
+    {file = "verovio-5.1.0-cp310-cp310-win32.whl", hash = "sha256:5f4cd03f622d69e993e6938ddff69e6ddb990627fcef2db596724ecb81e806f7"},
+    {file = "verovio-5.1.0-cp310-cp310-win_amd64.whl", hash = "sha256:0b96875991212ca2af47122945885821dc3bf9ea12e4e4aaf6a8eb5df6c567ce"},
+    {file = "verovio-5.1.0-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:5fc3bde6b73e0a5c65361e3d38c8edbe963e811620cc2eb2e8766f9d617fa13e"},
+    {file = "verovio-5.1.0-cp311-cp311-macosx_11_0_x86_64.whl", hash = "sha256:3216cc81bf3820249fbe425ca03e3a08a313fc119da312289611704e00d7048d"},
+    {file = "verovio-5.1.0-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:7c6e74727ffbaa23a6e284c330154ae613d11e6bf10f9a3c1f74a9ab7b598beb"},
+    {file = "verovio-5.1.0-cp311-cp311-win32.whl", hash = "sha256:58195b92c3795571dfc13331ce2da26c35e1b3038e61eed26d6c051a4ea7e9be"},
+    {file = "verovio-5.1.0-cp311-cp311-win_amd64.whl", hash = "sha256:5fca85a507c8af5c6ea1ddce4effbad4f2face82c917341b40b47207bb877ba7"},
+    {file = "verovio-5.1.0-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:ec4294c257dd31c9d489ab494ee1457b30d2cf141544f16b9617ebaea8168e6f"},
+    {file = "verovio-5.1.0-cp312-cp312-macosx_11_0_x86_64.whl", hash = "sha256:1805d1249a6d1eaa3ef59bdc4a3c707a5142832a6224219bceb779b6539340f1"},
+    {file = "verovio-5.1.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:2b1b1d309fffda67f2807ea78db55b96e4d0ebc24945b48b419f537f7feb5310"},
+    {file = "verovio-5.1.0-cp312-cp312-win32.whl", hash = "sha256:79e8592344f0ff0f20a08d2b69663cd446340093e86c0ddd45b30c17cf9beb60"},
+    {file = "verovio-5.1.0-cp312-cp312-win_amd64.whl", hash = "sha256:b12c6df52ccdcb608ae6d2e17f1ad9b6c6120a5e43ac706584018788b1cf3a9d"},
+    {file = "verovio-5.1.0-cp313-cp313-macosx_11_0_arm64.whl", hash = "sha256:6cf0ddecb4bc2af0a5c883b4ae53feabb79834609a98169778771181f8c91590"},
+    {file = "verovio-5.1.0-cp313-cp313-macosx_11_0_x86_64.whl", hash = "sha256:3ee4a4a4afc3e5ebb5fe36a1f390127f308c783cac1456f834ea42a790109d3a"},
+    {file = "verovio-5.1.0-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:8a961f42786aff8835e314e4f8a20f5aca74ea5725d6a68b5431b86941a83659"},
+    {file = "verovio-5.1.0-cp313-cp313-win32.whl", hash = "sha256:a04f7bcfbccbafaae73622805e4f6b2153c4648215df04c86e2d070b13593c17"},
+    {file = "verovio-5.1.0-cp313-cp313-win_amd64.whl", hash = "sha256:4b085a21115ebb3bfe20784f8664fe62b2256daa1e298c3839365479e698a6a5"},
+    {file = "verovio-5.1.0-cp39-cp39-macosx_11_0_arm64.whl", hash = "sha256:33cebe6430932d21d78bb9d3abb2665ccf5bcd6804d34593c553a5bf7d0dfae7"},
+    {file = "verovio-5.1.0-cp39-cp39-macosx_11_0_x86_64.whl", hash = "sha256:86ef0858601f508721efe96cb7b4f1694a9a0441f6e4197bf7544212ef073c95"},
+    {file = "verovio-5.1.0-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:1911d7f41fbd2049b12019385edca6d51e6479f626792baf866f37bae941a300"},
+    {file = "verovio-5.1.0-cp39-cp39-win32.whl", hash = "sha256:e8d68fe0bf2a9e33c37aad4b6fdd882178d37f2f372f52be4c8a9ebcec44b962"},
+    {file = "verovio-5.1.0-cp39-cp39-win_amd64.whl", hash = "sha256:83b0094e7ecfb78822a1fece40933e9b57a2c98150102fa14a5baf8bf252570d"},
+    {file = "verovio-5.1.0.tar.gz", hash = "sha256:dff45a5c2072b47c6333a6d3bd9a80581058b1b8acb18f797c54549848a053f3"},
+]
+
+[[package]]
 name = "watchdog"
 version = "6.0.0"
 description = "Filesystem events monitoring"
@@ -1802,4 +1837,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "8adbdafad5c53d374bf25e6a11c11f4a00ea810daa6f559b3a5e4e3d2b0a0315"
+content-hash = "2f99212eaa76732ae9f5c207c227a1ac3009bbf6ca7b211a3d98d9b2db97b80f"
