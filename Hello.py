@@ -1,19 +1,18 @@
 import streamlit as st
 from streamlit_pdf_viewer import pdf_viewer
 
-hide_github_icon = """
-#GithubIcon {
-  visibility: hidden;
-}
-"""
-st.markdown(hide_github_icon, unsafe_allow_html=True)
-
 st.set_page_config(
     layout="wide",
     page_title="Hello",
     page_icon="👋",
 )
 
+hide_github_icon = """
+#GithubIcon {
+  visibility: hidden;
+}
+"""
+st.markdown(hide_github_icon, unsafe_allow_html=True)
 
 st.write("# Welcome 👋")
 
