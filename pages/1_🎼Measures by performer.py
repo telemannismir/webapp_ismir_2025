@@ -133,12 +133,23 @@ def display_plot(data, metric_data, median_global,
         xlabel = 'measure n°'
         width=0.05
     fig, ax = plt.subplots(figsize=(20,10))
-    colors = ["red" if e=='S' else "blue" if e in 'bB' else 'green' if e =='T' else 'grey' for e in voices]
+    colors = ["red" if e=='S' else "blue" if e in 'bBst' else 'green' if e =='T' else 'grey' for e in voices]
     hatches= [".." if e=='.' else None for e in voices]
-    ax.bar(xs, metric_data, width=width, color=colors, hatch=hatches)# legende rest, voice
+    ax.bar(xs, metric_data, width=width, color=colors, hatch=hatches)# legend rest, voice
     for x,y, voice in zip(xs, metric_data, voices):
-        label = voice
-        if voice not in 'x.':
+        #### rename labels with paper annotations choices
+        if voice in 'bst':
+            label = 'B'
+        elif voice=='S':
+            label='u'
+        elif voice=='T':
+            label='m'
+        elif voice=='B':
+            label='b'
+        else:
+            label = voice
+        
+        if label not in 'x.':
             ax.annotate(label, # this is the text
                         (x,y), # these are the coordinates to position the label
                         textcoords="offset points", # how to position the text
@@ -206,70 +217,71 @@ def  by_measures():
  
         if 'performers_metric_measure_results' not in st.session_state:
             fantasia_data_measure = get_all_data(performer, fantasia)
-            #try:
-            video_start, video_end = get_video_boundaries(fantasia_data_measure, start, end, repeated)
-            video_url = f"https://www.youtube.com/watch?v={YT_ID[performer][fantasia]}"
-            
-            with col3:
-                st.video(video_url, start_time=video_start, end_time=video_end)
-                st.warning(f"if embeded video doesn't load, watch directly on youtube __start time: {start}s, end: {end}s__")
-                
-            data_measures = [m for m in fantasia_data_measure 
-                            if (m['measure']!= 'x' 
-                                and int(m['measure'])>=start 
-                                and int(m['measure'])<=end)
-                                and (int(m['repeated']))==repeated]           
-            data_all, monsets_all, real_onsets_all, metric_all =[], [], [], []
-            for m in range(start, end+1):
-                datafiltered= [d for d in data_measures if int(d['measure'])== m]
-                data_all.extend(datafiltered)
-                #real iois based on the onset in ms
-                iois=[float(m['ioi']) for m in datafiltered]
-                #get predicted metronomic time durations for all notes
-                metronomic_ioi= get_metronomic_ioi(datafiltered)
-                real_onsets = [float(m['onset']) for m in datafiltered]
-                real_onsets_all.extend(real_onsets)
-                
-                metronomic_onsets = []
-                acc=real_onsets[0]
-                metronomic_onsets.append(acc)
-                for i in range(1, len(real_onsets)):
-                    acc += metronomic_ioi[i-1]
+            try:
+                video_start, video_end = get_video_boundaries(fantasia_data_measure, start, end, repeated)
+                video_url = f"https://www.youtube.com/watch?v={YT_ID[performer][fantasia]}"
+
+                with col3:
+                    st.video(video_url, start_time=video_start, end_time=video_end)
+                    st.warning(f"if embeded video doesn't load, watch directly on youtube __start time: {round(video_start)}s, end: {round(video_end)}s__")
+
+                data_measures = [m for m in fantasia_data_measure 
+                                if (m['measure']!= 'x' 
+                                    and int(m['measure'])>=start 
+                                    and int(m['measure'])<=end)
+                                    and (int(m['repeated']))==repeated]           
+                data_all, monsets_all, real_onsets_all, metric_all =[], [], [], []
+                for m in range(start, end+1):
+                    datafiltered= [d for d in data_measures if int(d['measure'])== m]
+                    data_all.extend(datafiltered)
+                    #real iois based on the onset in ms
+                    iois=[float(m['ioi']) for m in datafiltered]
+                    #get predicted metronomic time durations for all notes
+                    metronomic_ioi= get_metronomic_ioi(datafiltered)
+                    real_onsets = [float(m['onset']) for m in datafiltered]
+                    real_onsets_all.extend(real_onsets)
+
+                    metronomic_onsets = []
+                    acc=real_onsets[0]
                     metronomic_onsets.append(acc)
-                monsets_all.extend(metronomic_onsets)
-                
-                if metric == "ioiratios":
-                    metric_all.extend(get_ioi_ratios(iois, metronomic_ioi))
-                elif metric == "deltaioi":
-                    metric_all.extend(get_delta_ioi_per_measure(iois, metronomic_ioi))
-                elif metric == "deltaonset":
-                    metric_all.extend(get_delta_onset_per_measure(real_onsets, metronomic_onsets, iois))
-            ####### dataframe with raw data and computed metric ######################
-            dfdata = pd.DataFrame.from_dict(data_all)
-            dfdata[metric]=metric_all
-            st.session_state.dfdata_measure=dfdata
-            ######################################################################
-            performers_results=timings(metric, performer, metric_all, data_all )
-            results = results_to_stats(performers_results[performer])
-            median_global, median_upper_voice, median_lower_voice  = results['all'][1], results['S'][1], results['Bb'][1]
-            
-            # dsplay stats
-            performers_metric_measure_results=timings(metric, performer, metric_all, data_all)
-            st.session_state.performers_metric_measure_results = performers_metric_measure_results
-            statistics= results_to_stats(st.session_state.performers_metric_measure_results[performer])
-            st.session_state.statistics_measure = statistics
-            st.divider()
-            st.write("Analyse on only the first sequence of notes if measures are repeated")
-            N=len(st.session_state.statistics_measure)
-            display_tab(st.session_state.statistics_measure, metric=metric)
-            with st.expander("See data on selected measures"):
-                st.session_state.dfdata_measure
-            with col4:
-                display_plot(data_all, metric_all, median_global, median_upper_voice, median_lower_voice, metric=metric)
-                #print(metric_all)
-            #excpt:
-            #st.warning("Invalid boundaries in measures or an incorrect repeat", icon="⚠️")
-            #st.warning("Please check the inputs", icon="🙏")
+                    for i in range(1, len(real_onsets)):
+                        acc += metronomic_ioi[i-1]
+                        metronomic_onsets.append(acc)
+                    monsets_all.extend(metronomic_onsets)
+
+                    if metric == "ioiratios":
+                        metric_all.extend(get_ioi_ratios(iois, metronomic_ioi))
+                    elif metric == "deltaioi":
+                        metric_all.extend(get_delta_ioi_per_measure(iois, metronomic_ioi))
+                    elif metric == "deltaonset":
+                        metric_all.extend(get_delta_onset_per_measure(real_onsets, metronomic_onsets, iois))
+                ####### dataframe with raw data and computed metric ######################
+                dfdata = pd.DataFrame.from_dict(data_all)
+                dfdata[metric]=metric_all
+                st.session_state.dfdata_measure=dfdata
+                ######################################################################
+                performers_results=timings(metric, performer, metric_all, data_all )
+                results = results_to_stats(performers_results[performer])
+                ### paper notations
+                median_global, median_upper_voice, median_lower_voice  = results['all'][1], results['u'][1], results['B+b'][1]
+
+                # dsplay stats
+                performers_metric_measure_results=timings(metric, performer, metric_all, data_all)
+                st.session_state.performers_metric_measure_results = performers_metric_measure_results
+                statistics= results_to_stats(st.session_state.performers_metric_measure_results[performer])
+                st.session_state.statistics_measure = statistics
+                st.divider()
+                st.write("Analyse on only the first sequence of notes if measures are repeated")
+                N=len(st.session_state.statistics_measure)
+                display_tab(st.session_state.statistics_measure, metric=metric)
+                with st.expander("See data on selected measures"):
+                    st.session_state.dfdata_measure
+                with col4:
+                    display_plot(data_all, metric_all, median_global, median_upper_voice, median_lower_voice, metric=metric)
+                    #print(metric_all)
+            except:
+                st.warning("Invalid boundaries in measures or an incorrect repeat", icon="⚠️")
+                st.warning("Please check the inputs", icon="🙏")
                 
 ##############################
 # on load

@@ -70,22 +70,32 @@ def get_metric_results(metric_data: list[float], datas: list[str])->dict[str:lis
     
     #for sixteenth notes in position 1,2,3,4 of a group of 4 in binary meter 2/4, 3/4 and 4/4
     sixteenth_p1_indexes= get_binary_sixteenth_indexes(datas, measures_positions, 1)
-    
-    ###########interleaved sixteenth notes stats#############################
-    #res={}
-    #for i in sixteenth_p1_indexes:
-    #    res[i]=datas[i]['voice']+datas[i+1]['voice']+datas[i+2]['voice']+datas[i+3]['voice']
-    #print(res)
-    ##########################################################################
-    
     sixteenth_p2_indexes= get_binary_sixteenth_indexes(datas, measures_positions, 2)
     sixteenth_p3_indexes= get_binary_sixteenth_indexes(datas, measures_positions, 3)
     sixteenth_p4_indexes= get_binary_sixteenth_indexes(datas, measures_positions, 4)
-
-    #for eight notes in position 1,2,3 of a group of 3 in ternary meter 3/8, 6/8, 9/8 and 12/8
+    
+    ###########interleaved sixteenth notes stats or xxxx #############################
+    sixteenth_p1_indexes_interleaved=[]
+    #sixteenth_p1_indexes_not_interleaved=[]
+    for i in sixteenth_p1_indexes:
+        if datas[i]['voice']+datas[i+1]['voice']+datas[i+2]['voice']+datas[i+3]['voice'] in ['BSBS', 'BSbS', 'SBSB', 'bSbS', 'bSBS', 'SBSB']:
+            sixteenth_p1_indexes_interleaved.append(i)
+        #if datas[i]['voice']+datas[i+1]['voice']+datas[i+2]['voice']+datas[i+3]['voice'] not in 'xxxx':
+        #    sixteenth_p1_indexes_not_interleaved.append(i)
+    ##########################################################################
+    sixteenth_p2_indexes_interleaved=[i+1 for i in sixteenth_p1_indexes_interleaved]
+    sixteenth_p3_indexes_interleaved=[i+2 for i in sixteenth_p1_indexes_interleaved]
+    sixteenth_p4_indexes_interleaved=[i+3 for i in sixteenth_p1_indexes_interleaved]
+    #sixteenth_p2_indexes_not_interleaved=[i+1 for i in sixteenth_p1_indexes_not_interleaved]
+    #sixteenth_p3_indexes_not_interleaved=[i+2 for i in sixteenth_p1_indexes_not_interleaved]
+    #sixteenth_p4_indexes_not_interleaved=[i+3 for i in sixteenth_p1_indexes_not_interleaved]
+    
+    ################### eight notes  ##################################################
+    #####in position 1,2,3 of a group of 3 in ternary meter 3/8, 6/8, 9/8 and 12/8#####
     eight_ternary_p1_indexes= get_ternary_eight_indexes(datas, measures_positions, 1)
     eight_ternary_p2_indexes= get_ternary_eight_indexes(datas, measures_positions, 2)
     eight_ternary_p3_indexes= get_ternary_eight_indexes(datas, measures_positions, 3)
+    
     
     #for eight notes in position 1,2 of a group of 2 with interleaved voices in binary meter 2/4, 3/4 and 4/4
     eight_interleaved_p1= get_binary_eight_interleaved_indexes(datas, measures_positions, 1)
@@ -98,12 +108,12 @@ def get_metric_results(metric_data: list[float], datas: list[str])->dict[str:lis
     #####results
     results['all']=get_metric_of_selected_elements(metric_data, datas)
     results['no rest']=get_metric_of_selected_elements(metric_data, datas,  rest_filtered=True)
-    # voice
-    results['B']=get_metric_of_selected_elements(metric_data, datas,  select_voice='B')
-    results['b']=get_metric_of_selected_elements(metric_data, datas,  select_voice='bs')
-    results['Bb']=get_metric_of_selected_elements(metric_data, datas,  select_voice='Bb')
-    results['S']=get_metric_of_selected_elements(metric_data, datas,  select_voice='S')
-    results['T']=get_metric_of_selected_elements(metric_data, datas,  select_voice='T')
+    #### voice with paper notation
+    results['b']=get_metric_of_selected_elements(metric_data, datas,  select_voice='B')
+    results['B']=get_metric_of_selected_elements(metric_data, datas,  select_voice='bst')
+    results['B+b']=get_metric_of_selected_elements(metric_data, datas,  select_voice='Bbst')
+    results['u']=get_metric_of_selected_elements(metric_data, datas,  select_voice='S')
+    results['m']=get_metric_of_selected_elements(metric_data, datas,  select_voice='T')
     results['x']=get_metric_of_selected_elements(metric_data, datas,  select_voice='x')
      # just for quarter note
     results['♩']=get_metric_of_selected_elements(metric_data, datas,  rest_filtered=True, d=1.0)
@@ -166,7 +176,7 @@ def get_metric_results(metric_data: list[float], datas: list[str])->dict[str:lis
                                                        rest_filtered=True, d=0.5, beats_indexes=eight_no_interleaved_p1)
     results['2nd♪♪ NO inter BM']=get_metric_of_selected_elements(metric_data, datas, 
                                                        rest_filtered=True, d=0.5, beats_indexes=eight_no_interleaved_p2)
-    ##16th note : 
+    ##16th 4-group BM : 
     results['1st♬♬ BM']=get_metric_of_selected_elements(metric_data, datas, 
                                                        rest_filtered=True, d=0.25, beats_indexes=sixteenth_p1_indexes)
     results['2nd♬♬ BM']=get_metric_of_selected_elements(metric_data, datas, 
@@ -175,7 +185,27 @@ def get_metric_results(metric_data: list[float], datas: list[str])->dict[str:lis
                                                        rest_filtered=True, d=0.25, beats_indexes=sixteenth_p3_indexes)
     results['4th♬♬ BM']=get_metric_of_selected_elements(metric_data, datas, 
                                                        rest_filtered=True, d=0.25, beats_indexes=sixteenth_p4_indexes)
+    ##16th interleaved : 
+    results['1st♬♬ interleaved upper/lower']=get_metric_of_selected_elements(metric_data, datas, 
+                                                       rest_filtered=True, d=0.25, beats_indexes=sixteenth_p1_indexes_interleaved)
+    results['2nd♬♬ interleaved upper/lower']=get_metric_of_selected_elements(metric_data, datas, 
+                                                       rest_filtered=True, d=0.25, beats_indexes=sixteenth_p2_indexes_interleaved)
+    results['3rd♬♬ interleaved upper/lower']=get_metric_of_selected_elements(metric_data, datas, 
+                                                       rest_filtered=True, d=0.25, beats_indexes=sixteenth_p3_indexes_interleaved)
+    results['4th♬♬ interleaved upper/lower']=get_metric_of_selected_elements(metric_data, datas, 
+                                                       rest_filtered=True, d=0.25, beats_indexes=sixteenth_p4_indexes_interleaved)
     
+    ##16th not interleaved : 
+    #results['1st♬♬ not interleaved']=get_metric_of_selected_elements(metric_data, datas, 
+    #                                                   rest_filtered=True, d=0.25, beats_indexes=sixteenth_p1_indexes_not_interleaved)
+    #results['2nd♬♬ not interleaved']=get_metric_of_selected_elements(metric_data, datas, 
+    #                                                   rest_filtered=True, d=0.25, beats_indexes=sixteenth_p2_indexes_not_interleaved)
+    #results['3rd♬♬ not interleaved']=get_metric_of_selected_elements(metric_data, datas, 
+    #                                                   rest_filtered=True, d=0.25, beats_indexes=sixteenth_p3_indexes_not_interleaved)
+    #results['4th♬♬ not interleaved']=get_metric_of_selected_elements(metric_data, datas, 
+    #                                                   rest_filtered=True, d=0.25, beats_indexes=sixteenth_p4_indexes_not_interleaved) 
+    
+    #8th 3-group TM
     results['1st♪♪♪ TM']=get_metric_of_selected_elements(metric_data, datas, 
                                                        rest_filtered=True, d=0.5, beats_indexes=eight_ternary_p1_indexes)
     results['2nd♪♪♪ TM']=get_metric_of_selected_elements(metric_data, datas, 

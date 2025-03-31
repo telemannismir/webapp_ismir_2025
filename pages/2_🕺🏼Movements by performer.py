@@ -124,7 +124,8 @@ def by_movements():
         st.session_state.statistics = statistics
     
     for f in MOVEMENTS_POSITIONS[movement_name]:
-        st.write(f'Fantasia {f} : movement(s) {(MOVEMENTS_POSITIONS[movement_name][f])}')
+        
+        st.write(f"Fantasia {f} -- movement(s) n°: {'-'.join([str(n) for n in MOVEMENTS_POSITIONS[movement_name][f]])}")
         
     N=len(st.session_state.statistics)
     display_tab(st.session_state.statistics, metric=metric)
