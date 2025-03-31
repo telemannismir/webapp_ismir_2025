@@ -75,65 +75,36 @@ def box_plot_show(x, options, colors, form, perfnames='all', metric='ioiratios')
             i+=7
         custom_lines = [Line2D([0], [0], color=colors[i], lw=4) for i in range(len(colors))]
         axs.legend(custom_lines, [p[0].upper()+p[1:] for p,t in PERFORMERS_AND_TUNING], 
-                   fontsize=20, ncols=6)
+                   fontsize=21, ncols=6)
     else:
-        axs.tick_params(axis='x', labelsize=12)
-    if metric != 'ioiratios': 
-        plt.axhline(y=0, color='gray', linestyle='--')
-    else:
-        plt.axhline(y=1, color='gray', linestyle='--')
+        axs.tick_params(axis='x', labelsize=17)
     
-    axs.grid(True, linestyle='--')
-    axs.set_ylabel("$\Delta \mathit{IOI}$", fontsize=30, labelpad=25, rotation=0)
-    #axs.set_ylim(-0.15, 0.19)
+    if metric == 'deltaonset' :
+        plt.axhline(y=0, color='gray', linestyle='--')
+        ylabel="$\Delta \mathit{o}(\%)$"
+    elif metric =='deltaioi' :
+        plt.axhline(y=0, color='gray', linestyle='--')
+        ylabel="$\Delta \mathit{IOI}(\%)$"
+    elif metric == 'ioiratios':
+        plt.axhline(y=1, color='gray', linestyle='--')
+        ylabel="$IOIratios$"
+            
+    
+    axs.grid(axis='y', linestyle='--', linewidth=1)
+    axs.set_ylabel(ylabel, fontsize=30)
+    #axs.set_ylim(-15, 19)
     axs.tick_params(axis='y', labelsize=30)  # Taille des labels des ticks
     form.pyplot(plt.gcf())
-    plt.savefig(f'{GRAPHS}/boxplotperformer{perfnames}.png')
-        
-
-
-##############################
-# pages functions
-##############################
-
-
-#def performers_global_ratios():
-#    """Boxplots comparing the 6 performers timing ioi ratios on several features
-#    """
-#    st.write("# Box plots  of ioi ratios by performers and grouped by selected categories")
-#    st.write("$ioi\_ratios = \dfrac{ioi}{metronomic\_ioi}$")
-#    
-#    with st.spinner("Wait for it....", show_time=True):
-#        if 'all_performers_ioi' not in st.session_state:
-#            all_performers_ioi=timings('ioiratios')
-#            st.session_state.all_performers_ioi=all_performers_ioi
-#            st.toast('Done!', icon='🎉')
-#    form_all_ratios = st.form("form_all_ratios")
-#    with form_all_ratios:# voir session state pour 
-#        options=st.multiselect(
-#            "Select filters:",
-#            list(st.session_state.all_performers_ioi['kuijken'].keys())
-#        )
-#        submitted = form_all_ratios.form_submit_button("Display Box plots")
-#        if submitted:    
-#            cmap = plt.get_cmap('Accent')
-#            colors = [cmap(i / 7) for i in range(6)]
-#            x=[]
-#            for k in options:
-#                x += [st.session_state.all_performers_ioi[p][k] 
-#                      for p in st.session_state.all_performers_ioi.keys()]
-#            fig, ax = plt.subplots(figsize=(9, 4))
-#            box_plot_show(x, options, colors, 
-#                          form_all_ratios, metric='ioiratios')
+    plt.savefig(f'{GRAPHS}/boxplotperformer{perfnames}.pdf', bbox_inches='tight')
 
 
 def performers_global_deltaioi():
     """Boxplots comparing the 6 performers deltas ioi per measure on several features
     """
-    st.write("# Box plots  of delta ioi per measure by performers and grouped by selected categories")
-    st.write("$\Delta ioi_{measure} = \dfrac{(ioi-metronomic\_ioi)}{measure\_duration}$")    
+    st.write("# Box plots  of $\Delta \mathit{IOI}(\%)$ by performers and grouped by selected categories")
+    st.write("$\Delta \mathit{IOI} = \dfrac{\mathit{IOI_p}-\mathit{IOI_m}}{dur(M)}$")    
          
-    with st.spinner("Wait for it....", show_time=True):
+    with st.spinner("Wait for it....around 20s", show_time=True):
         if 'all_performers_deltas_ioi' not in st.session_state:
             all_performers_deltas_ioi=timings('deltaioi')
             st.session_state.all_performers_deltas_ioi=all_performers_deltas_ioi
@@ -150,7 +121,7 @@ def performers_global_deltaioi():
             colors = [cmap(i / 7) for i in range(6)]
             x=[]
             for k in options_deltas_ioi:
-                x += [st.session_state.all_performers_deltas_ioi[p][k] 
+                x += [[e*100 for e in st.session_state.all_performers_deltas_ioi[p][k]]
                       for p in st.session_state.all_performers_deltas_ioi.keys()]
             fig, ax = plt.subplots(figsize=(9, 4))
             box_plot_show(x, options_deltas_ioi, colors,
@@ -160,10 +131,10 @@ def performers_global_deltaioi():
 def performers_global_deltaonset():
     """Boxplots comparing the 6 performers deltas onset per measure on several features
     """
-    st.write("# Box plots  of deltas onset per measure by performers and grouped by selected categories")
-    st.write("$\Delta onsets_{measure} = \dfrac{(onset-metronomic\_onset)}{measure\_duration}$")    
+    st.write("# Box plots  of $\Delta \mathit{o}(\%)$  by performers and grouped by selected categories")
+    st.write("$\Delta \mathit{o} = \dfrac{\mathit{o_p}-\mathit{o_m}}{dur(M)}$")    
          
-    with st.spinner("Wait for it....", show_time=True):
+    with st.spinner("Wait for it....around 20s", show_time=True):
         if 'all_performers_deltas_onset' not in st.session_state:
             all_performers_deltas_onset=timings('deltaonset')
             st.session_state.all_performers_deltas_onset=all_performers_deltas_onset
@@ -180,7 +151,7 @@ def performers_global_deltaonset():
             colors = [cmap(i / 7) for i in range(6)]
             x=[]
             for k in options_deltas_onset:
-                x += [st.session_state.all_performers_deltas_onset[p][k] 
+                x += [[e*100 for e in st.session_state.all_performers_deltas_onset[p][k]]
                       for p in st.session_state.all_performers_deltas_onset.keys()]
             fig, ax = plt.subplots(figsize=(9, 4))
             box_plot_show(x, options_deltas_onset, colors, 
@@ -193,8 +164,8 @@ def performers_global_deltaonset():
 
 page_names_to_funcs = {
     #"IOI ratios":performers_global_ratios,
-    "ΔIOI per measure": performers_global_deltaioi,
-    "Δonsets per measure": performers_global_deltaonset
+    "ΔIOI": performers_global_deltaioi,
+    "Δonset": performers_global_deltaonset
 }
 
 select = st.sidebar.selectbox("Choose a visualisation", page_names_to_funcs.keys())

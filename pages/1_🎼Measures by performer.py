@@ -4,15 +4,18 @@ This module defines the streamlit application
 """
 
 import streamlit as st
+from streamlit_pdf_viewer import pdf_viewer
 import numpy as np
 import pandas as pd
-import subprocess
 from matplotlib import pyplot as plt
 from src.durations_analyse_tools import *
-from src.music21_tools import score
 from src.data import *
 from src.stats import *
 from src.streamlit_displays import display_tab
+#import streamlit.components.v1 as components
+#from src.music21_tools import score
+#import subprocess
+
 
 #############################
 # PAGE CONFIG
@@ -34,18 +37,46 @@ def display_score(fantasia: int, movement :int=None, start=None, end=None):
         fantasia: fantasia number
         movement: movement number
     """
-    if movement!=None:
-        start, end = MOVEMENTS[fantasia][movement-1]
-    xml_data = score(fantasia, start-1, end)
-    xml_data.write("musicxml", f"{TEMP}/output.musicxml")
-    # create svg
-    options = "--footer=none --header=none --page-height=2200"
-    command = f"verovio {options} -o {TEMP}/output.svg {TEMP}/output.musicxml"
-    process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE)
-    process.wait()
-    # display image
-    st.image(f'{TEMP}/output.svg', caption=f'Fantasia {fantasia}, movement {movement}')
+    #####TEST WITHOUT VEROVIO STATIC####################
+    
+    #xml_data.write("musicxml", f"{STATIC}/output.musicxml")
+    #filename="output.musicxml"
+    #res = """<div class="panel-body">
+    #        <div id="app" class="panel" style="border: 1px solid lightgray; min-height: 800px;"></div>
+    #    </div>
+    #
+    #    <script type="module">
+    #        import 'https://editor.verovio.org/javascript/app/verovio-app.js';
+    #
+    #        // Create the app - here with an empty option object
+    #        const app = new Verovio.App(document.getElementById("app"), {});
+    #        // Load a file (MEI or MusicXML)"""  + f'fetch(./app/static/{filename})' +""".then(function(response) {
+    #                return response.text();
+    #            })
+    #            .then(function(text) {
+    #                app.loadData(text);
+    #            });
+    #    </script>"""
+    #print(res)
+    #components.html(res, height=500)
 
+    ##########VEROVIO##################
+    
+    #if movement!=None:
+    #    start, end = MOVEMENTS[fantasia][movement-1]
+    #xml_data = score(fantasia, start-1, end)
+    #xml_data.write("musicxml", f"{TEMP}/output.musicxml")
+    ## create svg
+    #options = "--footer=none --header=none --page-height=2200"
+    #command = f"verovio {options} -o {TEMP}/output.svg {TEMP}/output.musicxml"
+    #process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE)
+    #process.wait()
+    ## display image
+    #st.image(f'{TEMP}/output.svg', caption=f'Fantasia {fantasia}, movement {movement}')
+    
+    
+    with st.container():
+        pdf_viewer(f"scores/Fantasia{fantasia}.pdf")
 
 #############################
 # videos
@@ -236,7 +267,6 @@ def  by_measures():
             with col4:
                 display_plot(data_all, metric_all, median_global, median_upper_voice, median_lower_voice, metric=metric)
                 #print(metric_all)
-                #print(data_all)
             #excpt:
             #st.warning("Invalid boundaries in measures or an incorrect repeat", icon="⚠️")
             #st.warning("Please check the inputs", icon="🙏")
