@@ -178,46 +178,46 @@ def fantasias_performers():
                 box_plot_show(x, options, colors, form_fantasia, 
                             perfnames=performer, metric=metric)
         
-        #####test statitstiques
+        #####stats values
         
-        form_comparestats = st.form("form_comparestats")
-        with form_comparestats:# voir session state pour 
-            st.header("Statistic comparaison")
-            datas_selected=st.multiselect("choose two sequences of data",
-                                          list(st.session_state.statistics.keys()),
-                                          ['1st♪♪ inter BM', '2nd♪♪ inter BM'])
-            submitted_stats = form_comparestats.form_submit_button("Compare populations")
-            if submitted_stats:
-                try:
-                    if 'performers_metric_results' in st.session_state :
-                        g1 = st.session_state.performers_metric_results[performer][datas_selected[0]]
-                        g2 = st.session_state.performers_metric_results[performer][datas_selected[1]]
-                        res= scipy.stats.ttest_ind(g1, g2, equal_var=False)
-                        col3, col4 = st.columns(2, gap="small")
-                        with col3:
-                            st.write("Shapiro-Wilk test for normality.")
-                            shap1=scipy.stats.shapiro(g1)
-                            shap2=scipy.stats.shapiro(g2)
-                            shap1
-                            shap2
-                            mean1, mean2 = round(mean(g1),3), round(mean(g2),3)
-                            pst1, pst2= round(pstdev(g1),3), round(pstdev(g2),3)
-                            st.write("Mean and standard deviation")
-                            st.write(f"g1 = {mean1}±{pst1}")
-                            st.write(f"g2 = {mean2}±{pst2}")
-                        with col4 : 
-                            st.write("U Mann-Whitney test")
-                            # test non paramétrique : hse normalement distribuée non obligatoire et 2 groupes indépendants
-                            #https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.mannwhitneyu.html
-                            mann= scipy.stats.mannwhitneyu(g1, g2)
-                            mann
-                            st.write("Cohen effect size")
-                            cohen = mann[0]/(len(g1)*(len(g2)))
-                            cohen
-                # Pour compare plusieurs performers Wilkoxon signé (groupes apparéiés car m^me notes dans plusieurs interprétations)
-                except:
-                    st.warning("choose two sequences of data")
-            ##############################
+        #form_comparestats = st.form("form_comparestats")
+        #with form_comparestats:# voir session state pour 
+        #    st.header("Statistic comparaison")
+        #    datas_selected=st.multiselect("choose two sequences of data",
+        #                                  list(st.session_state.statistics.keys()),
+        #                                  ['1st♪♪ inter BM', '2nd♪♪ inter BM'])
+        #    submitted_stats = form_comparestats.form_submit_button("Compare populations")
+        #    if submitted_stats:
+        #        try:
+        #            if 'performers_metric_results' in st.session_state :
+        #                g1 = st.session_state.performers_metric_results[performer][datas_selected[0]]
+        #                g2 = st.session_state.performers_metric_results[performer][datas_selected[1]]
+        #                res= scipy.stats.ttest_ind(g1, g2, equal_var=False)
+        #                col3, col4 = st.columns(2, gap="small")
+        #                with col3:
+        #                    st.write("Shapiro-Wilk test for normality.")
+        #                    shap1=scipy.stats.shapiro(g1)
+        #                    shap2=scipy.stats.shapiro(g2)
+        #                    shap1
+        #                    shap2
+        #                    mean1, mean2 = round(mean(g1),3), round(mean(g2),3)
+        #                    pst1, pst2= round(pstdev(g1),3), round(pstdev(g2),3)
+        #                    st.write("Mean and standard deviation")
+        #                    st.write(f"g1 = {mean1}±{pst1}")
+        #                    st.write(f"g2 = {mean2}±{pst2}")
+        #                with col4 : 
+        #                    st.write("U Mann-Whitney test")
+        #                    # test non paramétrique : hse normalement distribuée non obligatoire et 2 groupes indépendants
+        #                    #https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.mannwhitneyu.html
+        #                    mann= scipy.stats.mannwhitneyu(g1, g2)
+        #                    mann
+        #                    st.write("Cohen effect size")
+        #                    cohen = mann[0]/(len(g1)*(len(g2)))
+        #                    cohen
+        #        # Pour compare plusieurs performers Wilkoxon signé (groupes apparéiés car m^me notes dans plusieurs interprétations)
+        #        except:
+        #            st.warning("choose two sequences of data")
+        #    ##############################
         
 
 
